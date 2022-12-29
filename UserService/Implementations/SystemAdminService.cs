@@ -109,7 +109,7 @@ namespace UserService.Implementations
                     roleName = role.RoleName;
                     if (roleName == "Author")
                     {
-                        books = books.Where(b => b.UserId == user.UserId).ToList();
+                        books = _context.Books.Where(b => b.UserId == user.UserId).ToList();
                     }
                     else if (roleName == "Reader")
                     {

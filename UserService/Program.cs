@@ -45,39 +45,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.MapPost("/validate", [AllowAnonymous] (UserValidationRequestModel request) =>
-//{
-//    var userName = request.UserName;
-//    var password = request.Password;
-//    var loggedUserObject = new UserValidationCheck(userName, password);
-//    var isValidUser = loggedUserObject.IsValidUser();
-//    var user = loggedUserObject.GetUser();
-//    if (isValidUser)
-//    {
-//        var tokenService = new TokenService();
-//        var token = tokenService.buildToken(builder.Configuration["jwt:key"],
-//                                            builder.Configuration["jwt:issuer"],
-//                                             new[]
-//                                            {
-//                                                 builder.Configuration["jwt:Aud"]
-//                                             },
-//                                             userName);
-
-//        return new
-//        {
-//            Token = token,
-//            User = user,
-//            IsAuthenticated = true
-//        };
-//    }
-//    return new
-//    {
-//        Token = string.Empty,
-//        User = user,
-//        IsAuthenticated = false
-//    };
-//}).WithName("validate");
-
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
