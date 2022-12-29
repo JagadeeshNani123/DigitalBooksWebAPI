@@ -9,6 +9,7 @@ public partial class DigitalBooksWebApiContext : DbContext
     IConfiguration configuration;
     public DigitalBooksWebApiContext()
     {
+
     }
 
     public DigitalBooksWebApiContext(DbContextOptions<DigitalBooksWebApiContext> options, IConfiguration _configuration)

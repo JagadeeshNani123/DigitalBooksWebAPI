@@ -9,6 +9,8 @@ using DigitalBooksWebAPI.Models;
 using DigitalBooksWebAPI.Services;
 using System.Security.Policy;
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
+using UserService.JwtToken;
 
 namespace UserService.Controllers
 {
@@ -17,10 +19,12 @@ namespace UserService.Controllers
     public class UsersController : ControllerBase
     {
         private readonly DigitalBooksWebApiContext _context;
+        IConfiguration _configuration;
 
-        public UsersController(DigitalBooksWebApiContext context)
+        public UsersController(DigitalBooksWebApiContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         // GET: api/Users
@@ -187,6 +191,42 @@ namespace UserService.Controllers
         {
             var encryptedPassword = PasswordEncryptionAndDecryption.EncodePasswordToBase64(password);
             return (_context.Users?.Any(e => e.UserName == userName && e.Password == encryptedPassword)).GetValueOrDefault();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("validate")]
+        public object ValidateUser(UserValidationRequestModel request)
+        {
+            var userName = request.UserName;
+            var password = PasswordEncryptionAndDecryption.EncodePasswordToBase64( request.Password);
+            var loggedUserObject = new UserValidationCheck(_context, userName, password);
+            var isValidUser = loggedUserObject.IsValidUser();
+            var user = loggedUserObject.GetUser();
+            if (isValidUser)
+            {
+                var tokenService = new TokenService();
+                var token = tokenService.buildToken(_configuration["jwt:key"],
+                                                    _configuration["jwt:issuer"],
+                                                     new[]
+                                                    {
+                                                 _configuration["jwt:Aud"]
+                                                     },
+                                                     userName);
+
+                return new
+                {
+                    Token = token,
+                    User = user,
+                    IsAuthenticated = true
+                };
+            }
+            return new
+            {
+                Token = string.Empty,
+                User = user,
+                IsAuthenticated = false
+            };
         }
 
         private bool UserExists(Guid id)

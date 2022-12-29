@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserService.Services;
-using Xunit;
+using NUnit.Framework;
 using DigitalBooksWebAPI.Services;
 using DigitalBooksWebAPI.Models;
 
@@ -20,15 +20,11 @@ namespace DigitalBooksUnitTest.UserService
         {
             _userService = new Mock<IUserService>();
         }
-
-
-
-        [NUnit.Framework.Theory]
+       
+        [Theory]
         public void Test_SearchBook()
         {
-
             //Arrange
-
             _userService.Setup(bs => bs.SearchBook(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<decimal>())).Returns(new List<BookMasterViewModel>());
 
             //Act
@@ -37,15 +33,12 @@ namespace DigitalBooksUnitTest.UserService
             //Assert
             result.Should().NotBeNull();
             result.Should().BeAssignableTo<List<BookMasterViewModel>>();
-
         }
 
-        [NUnit.Framework.Theory]
+        [Theory]
         public void Test_SignIn()
         {
-
             //Arrange
-
             _userService.Setup(bs => bs.SignIn(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
             //Act
@@ -53,15 +46,12 @@ namespace DigitalBooksUnitTest.UserService
 
             //Assert
             result.Should().BeTrue();
-
         }
 
-        [NUnit.Framework.Theory]
+        [Theory]
         public void Test_SignUp()
         {
-
             //Arrange
-
             _userService.Setup(bs => bs.SignUp(It.IsAny<User>())).Returns("success");
 
             //Act
@@ -70,8 +60,6 @@ namespace DigitalBooksUnitTest.UserService
             //Assert
             result.Should().Be("success");
             result.Should().BeAssignableTo<string>();
-
-
         }
     }
 }
