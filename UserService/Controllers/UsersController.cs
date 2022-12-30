@@ -16,6 +16,7 @@ namespace UserService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly DigitalBooksWebApiContext _context;
@@ -59,6 +60,7 @@ namespace UserService.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
+            user.Password = PasswordEncryptionAndDecryption.EncodePasswordToBase64(user.Password);
             if (id != user.UserId)
             {
                 return BadRequest();
@@ -196,7 +198,7 @@ namespace UserService.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("validate")]
-        public object ValidateUser(UserValidationRequestModel request)
+        public object ValidateUser(UserValidationRequestModel request, ITokenService tokenService)
         {
             var userName = request.UserName;
             var password = PasswordEncryptionAndDecryption.EncodePasswordToBase64( request.Password);
@@ -205,7 +207,6 @@ namespace UserService.Controllers
             var user = loggedUserObject.GetUser();
             if (isValidUser)
             {
-                var tokenService = new TokenService();
                 var token = tokenService.buildToken(_configuration["jwt:key"],
                                                     _configuration["jwt:issuer"],
                                                      new[]
@@ -217,14 +218,15 @@ namespace UserService.Controllers
                 return new
                 {
                     Token = token,
-                    User = user,
+                    User = new { UserName = user.UserName, Role = _context.Roles.First(r=> r.RoleId == user.RoleId).RoleName},
+                    ExpiryDate= DateTime.Now.Add(new TimeSpan(20, 30, 0)),
                     IsAuthenticated = true
                 };
             }
             return new
             {
-                Token = string.Empty,
-                User = user,
+                Token = "User is not authenticated",
+                User ="Not a valid user",
                 IsAuthenticated = false
             };
         }

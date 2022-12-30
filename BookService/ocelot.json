@@ -3,7 +3,7 @@
 
 
     {
-      //https://locathost:7163/api/values
+      //https://locathost:44311/api/SystemAdmin/GetAllUsersReport
 
       "DownstreamPathTemplate": "/api/SystemAdmin/GetAllUsersReport",
       "DownstreamSchema": "https",
