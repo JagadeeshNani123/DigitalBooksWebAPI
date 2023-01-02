@@ -16,7 +16,7 @@ namespace UserService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class UsersController : ControllerBase
     {
         private readonly DigitalBooksWebApiContext _context;
@@ -230,6 +230,18 @@ namespace UserService.Controllers
                 IsAuthenticated = false
             };
         }
+
+        [HttpGet("confirm-verify")]
+        public ContentResult ConfirmVerify()
+        {
+            var html = System.IO.File.ReadAllText("./WebForms/Dashboard.cshtml");
+            return new ContentResult
+            {
+                Content = html,
+                ContentType = "text/html"
+            };
+        }
+
 
         private bool UserExists(Guid id)
         {

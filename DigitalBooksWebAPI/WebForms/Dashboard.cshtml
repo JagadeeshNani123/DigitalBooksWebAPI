@@ -1,0 +1,15 @@
+﻿@page
+@model DigitalBooksWebAPI.WebForms.DashboardModel
+@{
+    <html>
+    <form class="rhc" method="POST" action="/api/v1/Au/Get">
+        <input type="text" name="twitter_handle" class="form-control" placeholder="Twitter" />
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+                <span class="ladda-label">Free Preview</span>
+                <span class="ladda-spinner"></span>
+            </button>
+        </span>
+    </form>
+    </html>
+}
