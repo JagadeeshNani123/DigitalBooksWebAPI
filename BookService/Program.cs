@@ -16,8 +16,6 @@ builder.Services.AddDbContext<DigitalBooksWebApiContext>(options => options.
 UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
 
-builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-builder.Services.AddOcelot().AddPolly();
 
 var app = builder.Build();
 

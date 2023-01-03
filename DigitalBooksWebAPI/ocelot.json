@@ -1,0 +1,232 @@
+{
+  "Routes": [
+    {
+      //https://localhost:44311/api/SystemAdmin/GetAllUsersReport
+      "DownstreamPathTemplate": "/api/SystemAdmin/GetAllUsersReport",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Get",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7009"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/Login",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7212/api/BookMasters/SearchBook?title=Book2&authorID=1&publisher=Test&publishedDate=2022-09-02
+      "DownstreamPathTemplate": "/api/BookMasters/SearchBook?title={t}&authorID={aID}&publisher={p}&publishedDate={pDate}",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Get",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/SearchBook/{t}/{aID}/{p}/{pDate}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7212/api/BookMasters/SearchBooks?categoryID=Book2&authorID=1&price=100
+      "DownstreamPathTemplate": "/api/BookMasters/SearchBooks?categoryID={c}&authorID={aID}&price={p}",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Get",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/SearchBooks/{c}/{aID}/{p}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7212/api/RoleMasters
+      "DownstreamPathTemplate": "/api/RoleMasters",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "GET",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/Roles/RolesList",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7212/api/BookMasters/id
+      "DownstreamPathTemplate": "/api/BookMasters/{id}",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Put",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/books/Update/{id}",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      //https://localhost:7212/api/CategoryMasters
+      "DownstreamPathTemplate": "/api/CategoryMasters",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Get",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/CategoryMasters/CategoryList",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7212/api/UserMasters
+      "DownstreamPathTemplate": "/api/UserMasters/AuthorList",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Get",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/UserMasters/AuthorList",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7212/api/UserMasters
+      "DownstreamPathTemplate": "/api/UserMasters",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/UserMasters/AddUser",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      //https://localhost:7212/api/BookMasters
+      "DownstreamPathTemplate": "/api/BookMasters",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/Book/AddBook",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      //https://localhost:7212/api/Purchases
+      "DownstreamPathTemplate": "/api/Purchases",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/Purchases/buybook",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      //https://localhost:7212/api/Purchases
+      "DownstreamPathTemplate": "/api/Purchases/GetPurchasedBookHistory?EmailId={EmailID}",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Get",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/Purchases/BookHistory/{EmailID}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7212/api/GetBooksWithStatus
+      "DownstreamPathTemplate": "/api/Purchases/GetBooksWithStatus?EmailId={EmailID}",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Get",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/GetBooksWithStatus/{EmailID}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7212/api/BookMasters/UpdateBookStatus/{id}/{UserID}/{Status}
+      "DownstreamPathTemplate": "/api/BookMasters/UpdateBookStatus/{BookId}/{UserID}/{Status}",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Put",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/UpdateBookStatus/{BookId}/{UserID}/{Status}",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      //https://localhost:7212/api/Purchases/PurchaseBook
+      "DownstreamPathTemplate": "/api/Purchases/PurchaseBook",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7212"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/Purchases/Purchasebook",
+      "UpstreamHttpMethod": [ "Post" ]
+    }
+
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7275/"
+  }
+}

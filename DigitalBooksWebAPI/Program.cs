@@ -18,6 +18,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DigitalBooksWebApiContext>(options => options.
 UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
+builder.Configuration.AddJsonFile("ocelot.json");
+builder.Services.AddOcelot().AddPolly();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,7 +35,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-
+app.UseOcelot().Wait();
 
 app.MapControllers();
 
