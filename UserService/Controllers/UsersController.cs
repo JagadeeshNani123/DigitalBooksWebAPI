@@ -198,7 +198,7 @@ namespace UserService.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("validate")]
-        public object ValidateUser(UserValidationRequestModel request, ITokenService tokenService)
+        public object ValidateUser(UserValidationRequestModel request)
         {
             var userName = request.UserName;
             var password = PasswordEncryptionAndDecryption.EncodePasswordToBase64( request.Password);
@@ -207,6 +207,7 @@ namespace UserService.Controllers
             var user = loggedUserObject.GetUser();
             if (isValidUser)
             {
+                var tokenService = new TokenService();
                 var token = tokenService.buildToken(_configuration["jwt:key"],
                                                     _configuration["jwt:issuer"],
                                                      new[]

@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      //https://localhost:44311/api/SystemAdmin/GetAllUsersReport
+      //https://localhost:7009/api/SystemAdmin/GetAllUsersReport
       "DownstreamPathTemplate": "/api/SystemAdmin/GetAllUsersReport",
       "DownstreamScheme": "https",
       "downstreamHttpMethod": "Get",
@@ -13,55 +13,55 @@
 
         }
       ],
+      "UpstreamPathTemplate": "/Admin/AllReports",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      //https://localhost:7009/api/Users/SignUp
+      "DownstreamPathTemplate": "/api/Users/SignUp",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7009"
+
+        }
+      ],
+      "UpstreamPathTemplate": "/DB/SignUp",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      //https://localhost:7009/api/Users/SignIn
+      "DownstreamPathTemplate": "/api/Users/SignIn",
+      "DownstreamScheme": "https",
+      "downstreamHttpMethod": "Post",
+      "RouteIsCaseSensitive": false,
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "7009"
+
+        }
+      ],
       "UpstreamPathTemplate": "/Login",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Post" ]
     },
     {
-      //https://localhost:7212/api/BookMasters/SearchBook?title=Book2&authorID=1&publisher=Test&publishedDate=2022-09-02
-      "DownstreamPathTemplate": "/api/BookMasters/SearchBook?title={t}&authorID={aID}&publisher={p}&publishedDate={pDate}",
-      "DownstreamScheme": "https",
-      "downstreamHttpMethod": "Get",
-      "RouteIsCaseSensitive": false,
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": "7212"
-
-        }
-      ],
-      "UpstreamPathTemplate": "/SearchBook/{t}/{aID}/{p}/{pDate}",
-      "UpstreamHttpMethod": [ "Get" ]
-    },
-    {
-      //https://localhost:7212/api/BookMasters/SearchBooks?categoryID=Book2&authorID=1&price=100
-      "DownstreamPathTemplate": "/api/BookMasters/SearchBooks?categoryID={c}&authorID={aID}&price={p}",
-      "DownstreamScheme": "https",
-      "downstreamHttpMethod": "Get",
-      "RouteIsCaseSensitive": false,
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": "7212"
-
-        }
-      ],
-      "UpstreamPathTemplate": "/SearchBooks/{c}/{aID}/{p}",
-      "UpstreamHttpMethod": [ "Get" ]
-    },
-    {
-      //https://localhost:7212/api/RoleMasters
-      "DownstreamPathTemplate": "/api/RoleMasters",
+      //https://localhost:7009/api/Users/SearchBook
+      "DownstreamPathTemplate": "/api/Users/SearchBook?title={t}&categoryName={catName}&authorName={autName}&publisherName={pubName}&price={prc}",
       "DownstreamScheme": "https",
       "downstreamHttpMethod": "GET",
       "RouteIsCaseSensitive": false,
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": "7212"
+          "Port": "7009"
 
         }
       ],
-      "UpstreamPathTemplate": "/Roles/RolesList",
+      "UpstreamPathTemplate": "/SearchBook/{t}/{catName}/{autName}/{pubName}/{prc}",
       "UpstreamHttpMethod": [ "Get" ]
     },
     {

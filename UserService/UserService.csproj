@@ -24,4 +24,8 @@
     <ProjectReference Include="..\DigitalBooksWebAPI\DigitalBooksWebAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="WebForms\" />
+  </ItemGroup>
+
 </Project>

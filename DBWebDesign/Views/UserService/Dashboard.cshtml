@@ -1,0 +1,68 @@
+﻿<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<title>Search Books</title>
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<title>Search Books</title>
+
+
+<table class="table table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th><a asp-action="Dashboard" asp-route-sortOrder="@ViewData["TitleSortParm"]">Title</a></th>
+            <th><a asp-action="Dashboard" asp-route-sortOrder="@ViewData["AuthorSortParm"]">Author</a></th>
+            <th><a asp-action="Dashboard" asp-route-sortOrder="@ViewData["PublisherSortParm"]">Publisher</a></th>
+            <th><a asp-action="Dashboard" asp-route-sortOrder="@ViewData["PriceSortParm"]">Price</a></th>
+            <th><a asp-action="Dashboard" asp-route-sortOrder="@ViewData["PublishedDateSortParm"]">Publish Date</a></th>
+            <th><a asp-action="Dashboard" asp-route-sortOrder="@ViewData["CategorySortParm"]">Category</a></th>
+            <th><a asp-action="Dashboard" asp-route-sortOrder="@ViewData["BookContentSortParm"]">Book Content</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dashboardBook in ViewBag.DashboardBooks)
+        {
+            <tr>
+                <td>@dashboardBook.Title</td>
+                <td>@dashboardBook.Author</td>
+                <td>@dashboardBook.Publisher</td>
+                <td>@dashboardBook.Price</td>
+                <td>@dashboardBook.PublishedDate</td>
+                <td>@dashboardBook.CategoryName</td>
+                <td>@dashboardBook.BookContent</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+
+
+
+
+
+<section class="border p-4 mb-4 d-flex align-items-center flex-column">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- Container wrapper -->
+        @Html.DropDownList("BookId", new SelectList(ViewBag.Books, "BookId", "BookName"), "Please select", new { @id = "ddlFruits" })
+        @Html.Hidden("BookName", null, new { @id = "hfBookName" })
+
+        @Html.DropDownList("CategoryId", new SelectList(ViewBag.Categories, "CategoryId", "CategoryName"), "Please select", new { @id = "ddlCategory" })
+        @Html.Hidden("CategoryName", null, new { @id = "hfCategoryName" })
+
+        @Html.DropDownList("UserId", new SelectList(ViewBag.Authors, "UserId", "UserName"), "Please select", new { @id = "ddlUsers" })
+        @Html.Hidden("UserName", null, new { @id = "hfUserName" })
+
+        @Html.DropDownList("PublisherId", new SelectList(ViewBag.Publishers, "PublisherId", "PublisherName"), "Please select", new { @id = "ddlPublishers" })
+        @Html.Hidden("PublisherName", null, new { @id = "hfPublisherName" })
+
+    </nav>
+    <!-- Navbar -->
+</section>
