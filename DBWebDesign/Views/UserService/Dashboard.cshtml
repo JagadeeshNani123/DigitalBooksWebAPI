@@ -10,8 +10,52 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<title>Search Books</title>
+<style>
+    .text-center {
+        text-align: center;
+       
+    }
+</style>
 
+
+
+
+<section class="border p-4 mb-4 d-flex align-items-center flex-column">
+
+   
+
+     <form asp-action="SearchBooks" method="post">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+       
+        <!-- Container wrapper -->
+            @Html.DropDownList("BookName", new SelectList(ViewBag.Obj.Books, "BookName", "BookName"), "Please select Book name", new { @id = "hfBookName" })
+        @Html.Hidden("BookName", null, new { @id = "hfBookName" })
+        <br />
+            @Html.DropDownList("CategoryName", new SelectList(ViewBag.Obj.Categories, "CategoryName", "CategoryName"), "Please select Category name", new { @id = "hfCategoryName" })
+        @Html.Hidden("CategoryName", null, new { @id = "hfCategoryName" })
+        <br />
+            @Html.DropDownList("UserName", new SelectList(ViewBag.Obj.Authors, "UserName", "UserName"), "Please select Author name", new { @id = "hfUserName" })
+        @Html.Hidden("UserName", null, new { @id = "hfUserName" })
+        <br />
+            @Html.DropDownList("PublisherName", new SelectList(ViewBag.Obj.Publishers, "PublisherName", "PublisherName"), "Please select publisher name", new { @id = "hfPublisherName" })
+        @Html.Hidden("PublisherName", null, new { @id = "hfPublisherName" })
+        <br />
+
+            <input id="Price" name="Price" type="number" placeholder="enter price" />
+
+
+            <br /> <br /> <br /> <br /> <br />
+           
+        
+    </nav>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Search Book</button>
+        </div>
+        
+     </form>
+    <!-- Navbar -->
+</section>
 
 <table class="table table-striped" style="width:100%">
     <thead>
@@ -47,22 +91,3 @@
 
 
 
-<section class="border p-4 mb-4 d-flex align-items-center flex-column">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <!-- Container wrapper -->
-        @Html.DropDownList("BookId", new SelectList(ViewBag.Books, "BookId", "BookName"), "Please select", new { @id = "ddlFruits" })
-        @Html.Hidden("BookName", null, new { @id = "hfBookName" })
-
-        @Html.DropDownList("CategoryId", new SelectList(ViewBag.Categories, "CategoryId", "CategoryName"), "Please select", new { @id = "ddlCategory" })
-        @Html.Hidden("CategoryName", null, new { @id = "hfCategoryName" })
-
-        @Html.DropDownList("UserId", new SelectList(ViewBag.Authors, "UserId", "UserName"), "Please select", new { @id = "ddlUsers" })
-        @Html.Hidden("UserName", null, new { @id = "hfUserName" })
-
-        @Html.DropDownList("PublisherId", new SelectList(ViewBag.Publishers, "PublisherId", "PublisherName"), "Please select", new { @id = "ddlPublishers" })
-        @Html.Hidden("PublisherName", null, new { @id = "hfPublisherName" })
-
-    </nav>
-    <!-- Navbar -->
-</section>

@@ -2,16 +2,20 @@
 using DigitalBooksWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
+using UserService.JwtToken;
 using UserService.Services;
 
 namespace UserService.Implementations
 {
-    public class UserService : IUserService
+    public class UsersService : IUserService
     {
         DigitalBooksWebApiContext _context;
-        public UserService(DigitalBooksWebApiContext context)
+        IConfiguration _configuration;
+        public UsersService(DigitalBooksWebApiContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public string SignUp(User user)
@@ -39,6 +43,8 @@ namespace UserService.Implementations
 
         public List<BookMasterViewModel> SearchBook(string title, string categoryName, string authorName, string publisherName, decimal price)
         {
+
+
             List<BookMasterViewModel> lsBookMaster = new List<BookMasterViewModel>();
             if (_context.Books == null)
             {
@@ -47,10 +53,11 @@ namespace UserService.Implementations
 
             try
             {
-
                 lsBookMaster = (from b in _context.Books
                                 join users in _context.Users on b.UserId equals users.UserId
-                                where b.BookName == title && b.Price <= price && b.Active == true
+                                where (b.BookName == title || users.UserName == authorName
+                                 || b.Price == price)
+                                && b.Active == true
                                 select new
                                 {
                                     BookId = b.BookId,
@@ -84,6 +91,45 @@ namespace UserService.Implementations
         }
 
         public bool SignIn(string userName, string password)
+        {
+            var encryptedPassword = PasswordEncryptionAndDecryption.EncodePasswordToBase64(password);
+            return (_context.Users?.Any(e => e.UserName == userName && e.Password == encryptedPassword)).GetValueOrDefault();
+        }
+
+        public object ValidateUser(UserValidationRequestModel request)
+        {
+            var userName = request.UserName;
+            var password = PasswordEncryptionAndDecryption.EncodePasswordToBase64(request.Password);
+            var loggedUserObject = new UserValidationCheck(_context, userName, password);
+            var isValidUser = loggedUserObject.IsValidUser();
+            var user = loggedUserObject.GetUser();
+            if (isValidUser)
+            {
+                var tokenService = new TokenService();
+                var token = tokenService.buildToken(_configuration["jwt:key"],
+                                                    _configuration["jwt:issuer"],
+                                                     new[]
+                                                    {
+                                                 _configuration["jwt:Aud"]
+                                                     },
+                                                     userName);
+
+                return new
+                {
+                    Token = token,
+                    User = new { UserName = user.UserName, Role = _context.Roles.First(r => r.RoleId == user.RoleId).RoleName },
+                    ExpiryDate = DateTime.Now.Add(new TimeSpan(20, 30, 0)),
+                    IsAuthenticated = true
+                };
+            }
+            return new
+            {
+                Token = "User is not authenticated",
+                User = "Not a valid user",
+                IsAuthenticated = false
+            };
+        }
+        public bool CheckIsValidUser(string userName, string password)
         {
             var encryptedPassword = PasswordEncryptionAndDecryption.EncodePasswordToBase64(password);
             return (_context.Users?.Any(e => e.UserName == userName && e.Password == encryptedPassword)).GetValueOrDefault();

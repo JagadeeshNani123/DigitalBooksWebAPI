@@ -1,16 +1,18 @@
 ﻿using DBWebDesign.Implementations;
 using DigitalBooksWebAPI.Models;
+using DigitalBooksWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Newtonsoft.Json;
 using Ocelot.Values;
+using System.Collections.Generic;
 
 namespace DBWebDesign.Controllers
 {
     public class UserServiceController : Controller
     {
-        HttpClient client = new HttpClient();
+       
         List<User> users = new List<User>();
         List<User> authors = new List<User>();
         List<User> readers = new List<User>();
@@ -19,7 +21,7 @@ namespace DBWebDesign.Controllers
         List<Book> books= new List<Book>();
         string baseUrl = "https://localhost:7009/api/Users";
         DigitalBookService dbService = new DigitalBookService();
-        dynamic obj = "";
+        Object obj = new { };
         // GET: UserServiceController
         public UserServiceController()
         {
@@ -33,7 +35,7 @@ namespace DBWebDesign.Controllers
             var publishers =GetPublishers();
             var categories = GetCategories();
             var authors = GetAuthors();
-            var obj = new  
+            obj = new  
             {
                  Books = books,
                  Publishers= publishers,
@@ -59,10 +61,10 @@ namespace DBWebDesign.Controllers
             return  publishers.ToList();
         }
 
-        public async Task<IActionResult> Dashboard(string sortOrder)
+        public IActionResult Dashboard(string sortOrder, List<BookMasterViewModel> filteredBooks = null)
         {
-
-            var dashBoardBooks = await dbService.GetDashboardBooks();
+            ViewBag.Obj = obj;
+            var dashBoardBooks =  GetDashboardBooks(filteredBooks);
             ViewData["PriceSortParm"] = String.IsNullOrEmpty(sortOrder) ? "price_desc" : "";
             ViewData["PublishedDateSortParm"] = sortOrder == "PublishedDate" ? "date_desc" : "PublishedDate";
             ViewData["TitleSortParm"] = sortOrder == "Title" ? "title_desc" :"Title";
@@ -138,19 +140,7 @@ namespace DBWebDesign.Controllers
         }
 
         // POST: UserServiceController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+    
 
         // GET: UserServiceController/Edit/5
         public ActionResult LogIn()
@@ -158,60 +148,17 @@ namespace DBWebDesign.Controllers
             return View();
         }
 
-        // POST: UserServiceController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+       
 
-        // GET: UserServiceController/Delete/5
-        public ActionResult Delete(int id)
+        public void GetUsers()
         {
-            return View();
-        }
-
-        // POST: UserServiceController/Delete/5
-      
-
-        public async Task<IActionResult> ConfigureUserServiceActionMethods()
-        {
-            var response = await client.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode();
-            string responseBody =  response.Content.ReadAsStringAsync().Result;
-            var usersListObj = JsonConvert.DeserializeObject(responseBody);
-            var users = usersListObj != null ? (List<User>)usersListObj : new List<User>();
-            return View(users);
-        }
-
-        public async void GetUsers()
-        {
-            var response = await client.GetAsync(baseUrl);
-            response.EnsureSuccessStatusCode();
-            string responseBody =  response.Content.ReadAsStringAsync().Result;
-            var usersListObj = JsonConvert.DeserializeObject<List<User>>(responseBody);
-            users = usersListObj != null ? usersListObj : new List<User>();
+            users = dbService.GetUsers().Result;
             ViewBag.Users = users;
         }
 
-        public async void GetRoles()
+        public void GetRoles()
         {
-            var rolesBaseUrl = "https://localhost:7009/api/Roles";
-            client.BaseAddress= new Uri(rolesBaseUrl);
-            var res =  client.GetAsync(baseUrl).Result;
-            var response = await client.GetAsync(rolesBaseUrl);
-            response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            var rolesListObj = JsonConvert.DeserializeObject<List<Role>>(responseBody);
-            roles = rolesListObj != null ? rolesListObj : new List<Role>();
+            roles = dbService.GetRoles().Result;
             ViewBag.Roles = roles;
         }
 
@@ -233,6 +180,25 @@ namespace DBWebDesign.Controllers
         {
             var systemAdmin = roles.Count() != 0 ? roles.FirstOrDefault(role => role.RoleName == "SystemAdmin") : null;
             sysAdmins = systemAdmin != null ? users.Where(user => user.RoleId == systemAdmin.RoleId).ToList() : new List<User>();
+        }
+
+        [HttpPost]
+        public ActionResult SearchBooks(IFormCollection form)//string hfBookName, string hfCategoryName, string hfUserName, string hfPublisherName, decimal price)
+        {
+            string bookName = form["BookName"].ToString();
+            string category = form["CategoryName"].ToString();
+            string authourName = form["UserName"].ToString();
+            string publisherName = form["PublisherName"].ToString();
+            decimal price = decimal.Parse(form["Price"].ToString());
+            var filterBooks = dbService.SearchBooks(bookName, category, authourName, publisherName, price).Result;
+            Dashboard("", filterBooks);
+            return View("Dashboard");
+        }
+
+        public List<BookMasterViewModel> GetDashboardBooks(List<BookMasterViewModel> books = null)
+        {
+            var dashboardBooks = books.Count==0 ?  dbService.GetDashboardBooks().Result : books;
+            return dashboardBooks;
         }
     }
 }

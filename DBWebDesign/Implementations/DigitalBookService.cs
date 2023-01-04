@@ -3,6 +3,7 @@ using DigitalBooksWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Ocelot.Middleware;
+using System.Drawing.Design;
 
 namespace DBWebDesign.Implementations
 {
@@ -46,6 +47,18 @@ namespace DBWebDesign.Implementations
             var usersListObj = JsonConvert.DeserializeObject<List<User>>(responseBody);
             users = usersListObj != null ? usersListObj : new List<User>();
             return users;
+        }
+
+        public async Task<List<BookMasterViewModel>> SearchBooks(string title, string catName, string autName, string  pubName, decimal prc)
+        {
+            HttpClient userClient = new HttpClient();
+            string baseUrl = "https://localhost:7009/api/Users";
+            userClient.BaseAddress = new Uri(baseUrl);
+            var response = await userClient.GetAsync(baseUrl+ "/SearchBook?title="+title+"&categoryName="+catName+"&authorName="+autName+"&publisherName="+pubName+"&price="+prc);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            var bookListObj = JsonConvert.DeserializeObject<List<BookMasterViewModel>>(responseBody);
+            return bookListObj;
         }
 
         public async Task<List<Publisher>> GetPublishers()
@@ -151,5 +164,7 @@ namespace DBWebDesign.Implementations
             }
             return dashBoardBooks;
         }
+
+
     }
 }
