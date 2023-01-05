@@ -145,9 +145,20 @@ namespace DBWebDesign.Controllers
         {
             string userName = form["UserName"].ToString();
             string password = form["Password"].ToString();
-            string emailAddress = form["EmailAddress"].ToString();
-            string roleId = form["RoleId"].ToString();
-            return View("Dashboard");
+            string emailAddress = form["email"].ToString();
+            Guid roleId = new Guid(form["RoleId"].ToString());
+            var user = new User()
+            {
+                UserId = Guid.NewGuid(),
+                UserName = userName,
+                Password = password,
+                RoleId = roleId
+            };
+            ViewBag.User = user;
+            ViewBag.Email = emailAddress;
+            ViewBag.Role = dbService.GetRoleName(user.RoleId);
+            dbService.SignUpUser(user);
+            return View("Congractulations");
         }
 
         // POST: UserServiceController/Create
@@ -159,8 +170,11 @@ namespace DBWebDesign.Controllers
             return View();
         }
 
-       
-
+        [HttpPost]
+        public ActionResult SignIn()
+        {
+            return View();
+        }
         public void GetUsers()
         {
             users = dbService.GetUsers().Result;

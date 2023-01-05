@@ -3,8 +3,10 @@ using DigitalBooksWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Ocelot.Middleware;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Design;
+using System.Text;
 
 namespace DBWebDesign.Implementations
 {
@@ -50,17 +52,18 @@ namespace DBWebDesign.Implementations
             return users;
         }
 
-        public async Task<List<User>> SignUpUser()
+        public async void SignUpUser(User user)
         {
             HttpClient userClient = new HttpClient();
             string baseUrl = "https://localhost:7009/api/Users";
-            userClient.BaseAddress = new Uri(baseUrl+ "/SignIn");
-            var response = await userClient.GetAsync(baseUrl);
+            userClient.BaseAddress = new Uri(baseUrl);
+            var json = JsonConvert.SerializeObject(user);
+            var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var url = baseUrl+"/SignUp";
+
+            var response = await userClient.PostAsync(url, data);
             response.EnsureSuccessStatusCode();
-            string responseBody = await response.Content.ReadAsStringAsync();
-            var usersListObj = JsonConvert.DeserializeObject<List<User>>(responseBody);
-            users = usersListObj != null ? usersListObj : new List<User>();
-            return users;
         }
 
         public List<BookMasterViewModel> SearchBooks(string title, string catName, string autName, string  pubName, decimal prc)
@@ -187,5 +190,12 @@ namespace DBWebDesign.Implementations
             var publisherName = publisher != null ? publisher.PublisherName : string.Empty;
             return publisherName;
         }
+        public string GetRoleName(Guid roleId)
+        {
+            var role = roles.FirstOrDefault(user => user.RoleId == roleId);
+            var roleName = role != null ? role.RoleName : string.Empty;
+            return roleName;
+        }
+
     }
 }

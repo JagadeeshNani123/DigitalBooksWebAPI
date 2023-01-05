@@ -78,6 +78,8 @@ namespace UserService.Controllers
             var tokenValidationObj = usersService.ValidateUser(request);
             return tokenValidationObj;
         }
+
+
     }
 }
 
