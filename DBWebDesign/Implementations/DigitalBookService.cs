@@ -3,6 +3,7 @@ using DigitalBooksWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Ocelot.Middleware;
+using System.Collections.Generic;
 using System.Drawing.Design;
 
 namespace DBWebDesign.Implementations
@@ -49,16 +50,24 @@ namespace DBWebDesign.Implementations
             return users;
         }
 
-        public async Task<List<BookMasterViewModel>> SearchBooks(string title, string catName, string autName, string  pubName, decimal prc)
+        public async Task<List<User>> SignUpUser()
         {
             HttpClient userClient = new HttpClient();
             string baseUrl = "https://localhost:7009/api/Users";
-            userClient.BaseAddress = new Uri(baseUrl);
-            var response = await userClient.GetAsync(baseUrl+ "/SearchBook?title="+title+"&categoryName="+catName+"&authorName="+autName+"&publisherName="+pubName+"&price="+prc);
+            userClient.BaseAddress = new Uri(baseUrl+ "/SignIn");
+            var response = await userClient.GetAsync(baseUrl);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
-            var bookListObj = JsonConvert.DeserializeObject<List<BookMasterViewModel>>(responseBody);
-            return bookListObj;
+            var usersListObj = JsonConvert.DeserializeObject<List<User>>(responseBody);
+            users = usersListObj != null ? usersListObj : new List<User>();
+            return users;
+        }
+
+        public List<BookMasterViewModel> SearchBooks(string title, string catName, string autName, string  pubName, decimal prc)
+        {
+            var allBooks = GetDashboardBooks();
+            var filteredBooks = allBooks.Where(b => b.Title == title || b.Price <= prc || b.CategoryName == catName || b.Publisher == pubName).ToList();
+            return filteredBooks;
         }
 
         public async Task<List<Publisher>> GetPublishers()
@@ -130,23 +139,17 @@ namespace DBWebDesign.Implementations
             var systemAdmin = roles.Count() != 0 ? roles.FirstOrDefault(role => role.RoleName == "SystemAdmin") : null;
             return systemAdmin != null ? users.Where(user => user.RoleId == systemAdmin.RoleId).ToList() : new List<User>();
         }
-
-        
-
-        public async Task<List<BookMasterViewModel>> GetDashboardBooks()
+        public List<BookMasterViewModel> GetDashboardBooks()
         {
             var dashBoardBooks = new List<BookMasterViewModel>();
             foreach (var book in books)
             {
                 var bookName = book.BookName;
-                var author = users.FirstOrDefault(user => user.UserId == book.UserId);
-                var authorName = author != null ? author.UserName : string.Empty;
-                var publisher = publishers.FirstOrDefault(pub => pub.PublisherId == book.PublisherId);
-                var publisherName = publisher != null ? publisher.PublisherName : string.Empty;
+                var authorName = GetAuthorName(book.UserId);
+                var publisherName = GetPublisherName(book.PublisherId);
                 var price = book.Price;
                 var pubDate = book.PublishedDate;
-                var category = categories.FirstOrDefault(cat => cat.CategoryId == book.CategoryId);
-                var categoryName = category != null ? category.CategoryName : string.Empty;
+                var categoryName = GetCategoryName(book.CategoryId);
                 var bookContent = book.BookContent;
                 var active = book.Active;
                 var dasboardBook = new BookMasterViewModel()
@@ -156,15 +159,33 @@ namespace DBWebDesign.Implementations
                     Publisher = publisherName,
                     CategoryName = categoryName,
                     PublishedDate = pubDate,
-                    BookContent= bookContent,
-                    Price =price,
+                    BookContent = bookContent,
+                    Price = price,
                     Active = active
                 };
                 dashBoardBooks.Add(dasboardBook);
             }
             return dashBoardBooks;
         }
+        public string GetAuthorName(Guid autId)
+        {
+            var author = users.FirstOrDefault(user => user.UserId == autId);
+            var authorName = author != null ? author.UserName : string.Empty;
+            return authorName;  
+        }
 
+        public string GetCategoryName(Guid catId)
+        {
+            var category = categories.FirstOrDefault(cat => cat.CategoryId == catId);
+            var categoryName = category != null ? category.CategoryName : string.Empty;
+            return categoryName;
+        }
 
+        public string GetPublisherName(Guid pubId)
+        {
+            var publisher = publishers.FirstOrDefault(pub => pub.PublisherId == pubId);
+            var publisherName = publisher != null ? publisher.PublisherName : string.Empty;
+            return publisherName;
+        }
     }
 }

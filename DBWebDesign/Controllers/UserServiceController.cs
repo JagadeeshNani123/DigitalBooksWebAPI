@@ -134,13 +134,24 @@ namespace DBWebDesign.Controllers
         }
 
         // GET: UserServiceController/Create
+
         public ActionResult Register()
         {
+            ViewBag.Roles = roles;
             return View();
+        }
+        [HttpPost]
+        public ActionResult SignUp(IFormCollection form)
+        {
+            string userName = form["UserName"].ToString();
+            string password = form["Password"].ToString();
+            string emailAddress = form["EmailAddress"].ToString();
+            string roleId = form["RoleId"].ToString();
+            return View("Dashboard");
         }
 
         // POST: UserServiceController/Create
-    
+
 
         // GET: UserServiceController/Edit/5
         public ActionResult LogIn()
@@ -190,14 +201,14 @@ namespace DBWebDesign.Controllers
             string authourName = form["UserName"].ToString();
             string publisherName = form["PublisherName"].ToString();
             decimal price = decimal.Parse(form["Price"].ToString());
-            var filterBooks = dbService.SearchBooks(bookName, category, authourName, publisherName, price).Result;
+            var filterBooks = dbService.SearchBooks(bookName, category, authourName, publisherName, price);
             Dashboard("", filterBooks);
             return View("Dashboard");
         }
 
         public List<BookMasterViewModel> GetDashboardBooks(List<BookMasterViewModel> books = null)
         {
-            var dashboardBooks = books.Count==0 ?  dbService.GetDashboardBooks().Result : books;
+            var dashboardBooks = books.Count==0 ?  dbService.GetDashboardBooks() : books;
             return dashboardBooks;
         }
     }
